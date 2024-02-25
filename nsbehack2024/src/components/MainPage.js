@@ -131,32 +131,135 @@ function MainPage() {
         
     return (
         <div>
-            {/* Render recipe cards */}
-            {recipes.map((recipe, index) => (
-                <RecipeCard key={index} recipe={recipe} />
-            ))}
-
-            {/* Modal for filtering */}
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={() => setModalIsOpen(false)}
-                // Add modal content here
-            >
-                {/* Add modal content, filtering options, etc. */}
-                <h2>Filter Options</h2>
-                {/* Add filtering options components here */}
-                <Box sx={{ width: "100%" }}>
-                    <Slider
-                        value={sliderValue}
-                        aria-label="Custom marks"
-                        defaultValue={20}
-                        step={10}
-                        valueLabelDisplay="auto"
-                        onChange={handleSliderChange}
+            <div className='d-flex justify-content-between align-items-center pt-4 px-4'>
+                <h1 className='mx-auto'>&nbsp;&nbsp;&nbsp;Fridge to Food</h1>
+                <Link to={{ pathname: '/saved-recipes' }}>
+                    <BiSolidFoodMenu className='saved-btn'/>
+                </Link>
+            </div>
+            <h5 className='d-flex justify-content-center mt-3 mb-1'>
+                Enter all ingredients you currently have to receive recipes that you can start cooking right away!
+            </h5>
+            <h5 className='d-flex justify-content-center mb-4'>
+                Use the filter feature to filter recipes by time, allergies, and dietary restrictions
+            </h5>
+            <div className='container'>
+                <div className='row'>
+                    <div className='col-6 offset-3'>
+                    <Select
+                        className='select'
+                        classNames={{
+                            control: () => 'select-control'
+                        }}
+                        options={ingredientsList}
+                        value={selectedIngredients.map((ingredient) => ({ value: ingredient, label: ingredient }))}
+                        onChange={handleIngredientChange}
+                        /* onInputChange={(inputValue) => {
+                            handleIngredientChange(inputValue);
+                        }} */
+                        isClearable={false}
+                        isSearchable
+                        isMulti
+                        placeholder="Enter Ingredients"
                     />
-                </Box>
-                {/* Add other filtering options as needed */}
-            </Modal>
+                    </div>
+                </div>
+                <div className='row'>
+                    <div className='col-1 offset-8 text-right mt-2'>
+                        <button
+                            onClick={() => setModalIsOpen(true)}
+                            className='filter-btn'
+                        >Filter</button>
+                    </div>
+                </div>
+            </div>
+            <div className='modal-container'>
+                <div>
+                    <Modal
+                        isOpen={modalIsOpen}
+                        onRequestClose={() => setModalIsOpen(false)}
+                        className="modal-shape"
+                        
+                    >
+                        <div className='modal-content'>
+                            <h4>Filter Results</h4>
+                            <hr/>
+                            <h5 className='mt-3'>Time</h5>
+                            <h6>
+                                {`Select the MAXIMUM amount of time in minutes for the recipes (select 0 to show recipes of all times)`}
+                            </h6>
+                            <Box sx={{ width: "100%" }}>
+                                <Slider
+                                value={sliderValue}
+                                aria-label="Custom marks"
+                                defaultValue={20}
+                                step={10}
+                                valueLabelDisplay="auto"
+                                onChange={handleSliderChange}
+                                />
+                            </Box>
+                            <h5 className='mt-4'>Allergies</h5>
+                            <div className='container'>
+                                <div className='row'>
+                                    <div className='col-6'>
+                                        <FormControlLabel control={<Checkbox checked={selectedAllergies.includes('Nuts')} onChange={() => handleAllergyChange('Nuts')}/>} className="checkbox" label="Nuts" />
+                                        <FormControlLabel control={<Checkbox checked={selectedAllergies.includes('Shellfish')} onChange={() => handleAllergyChange('Shellfish')}/>} className="checkbox" label="Shellfish" />
+                                        <FormControlLabel control={<Checkbox checked={selectedAllergies.includes('Fish')} onChange={() => handleAllergyChange('Fish')}/>} className="checkbox" label="Fish" />
+                                    </div>
+                                    <div className='col-6'>
+                                        <FormControlLabel control={<Checkbox checked={selectedAllergies.includes('Eggs')} onChange={() => handleAllergyChange('Eggs')}/>} className="checkbox" label="Eggs" />
+                                        <FormControlLabel control={<Checkbox checked={selectedAllergies.includes('Soy')} onChange={() => handleAllergyChange('Soy')}/>} className="checkbox" label="Soy" />
+                                        <FormControlLabel control={<Checkbox checked={selectedAllergies.includes('Sesame')} onChange={() => handleAllergyChange('Sesame')}/>} className="checkbox" label="Sesame" />
+                                    </div>
+                                </div>
+                            </div>
+                            <h5 className='mt-4'>Dietary Restrictions</h5>
+                            <div className='container'>
+                                <div className='row'>
+                                    <div className='col-6'>
+                                        <FormControlLabel control={<Checkbox checked={isVegan} onChange={() => setIsVegan(!isVegan)}/>} className="checkbox" label="Vegan" />
+                                        <FormControlLabel control={<Checkbox checked={isGlutenFree} onChange={() => setIsGlutenFree(!isGlutenFree)}/>} className="checkbox mt-2" label="Gluten-free" />
+                                    </div>
+                                    <div className='col-6'>
+                                        <FormControlLabel control={<Checkbox checked={isVegetarian} onChange={() => setIsVegetarian(!isVegetarian)}/>} className="checkbox" label="Vegetarian" />
+                                        <FormControlLabel control={<Checkbox checked={isDairyFree} onChange={() => setIsDairyFree(!isDairyFree)}/>} className="checkbox mt-2" label="Dairy-free" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        
+            <div className='container mt-4'>
+                <div className='row'>
+                    {filteredRecipes().map((recipe, index) => (
+                    <div className='col-4'>
+                        <div className='recipe-card' key={index}>
+                            <div className='d-flex justify-content-between'>
+                                <div>
+                                    <img src={recipe.images} alt={`Recipe ${index + 1}`} style={{maxWidth: "100%", maxHeight: "120px"}}></img>
+                                </div>
+                                <div>
+                                    <div className='heart-btn'>
+                                        <ToggleButton recipe={recipe} savedRecipes={savedRecipes} setSavedRecipes={setSavedRecipes}/>
+                                    </div>
+                                    <div className='pot-btn'>
+                                        {/* target="_blank" opens link in new tab */}
+                                        <a href={recipe.url} target="_blank" rel="noopener noreferrer">
+                                            <PiCookingPotBold size="25px"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='recipe-title mb-1'>{recipe.title}</div>
+                            <h6>{recipe.description}</h6>
+                            <h6>Time: {recipe.total}</h6>
+                        </div>
+                    </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }
