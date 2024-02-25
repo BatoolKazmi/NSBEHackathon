@@ -1,0 +1,69 @@
+.select {
+    min-width: 40%;
+}
+
+.select-control {
+    border-radius: 40px !important;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.recipe-card {
+    background: white;
+    border-radius: 10px;
+    margin: 20px 20px;
+    padding: 20px 20px 20px 20px;
+}
+
+.recipe-title {
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.saved-btn {
+    align-self: top;
+    height: 60px;
+    width: 40px;
+}
+
+.filter-btn {
+    text-decoration: underline;
+}
+
+.filter-btn:hover {
+    color: rgb(13,110,253);
+}
+
+.heart-btn {
+    margin-top: -5px;
+    margin-right: -5px;
+    margin-bottom: 6px;
+    padding: none;
+}
+
+.pot-btn {
+    margin-left: 6px;
+    padding: none;
+}
+
+.modal-shape {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 30%;
+    height: 100%;
+    background: white;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+.modal-content {
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 10%;
+}
+
+.checkbox {
+    font-size: 12px;
+    margin: 0px 0px -12px -12px;
+}
